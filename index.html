@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locked Question</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: linear-gradient(to bottom right, #ff9a9e, #fad0c4);
+  color: white;
+  padding: 40px 20px;
+}
+
+.box {
+  background: rgba(0,0,0,0.25);
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 500px;
+  margin: auto;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #ff4d88;
+  color: white;
+}
+
+.list-item {
+  opacity: 0;
+  margin: 8px 0;
+  transition: opacity 0.5s ease;
+}
+
+.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- 🎵 Background Music -->
+<audio id="bgMusic" src="babycomeback.mp3" loop></audio>
+
+<div class="box" id="content">
+  <h1>So… it’s February… ❤️</h1>
+  <button onclick="startQuestionPage()">Continue</button>
+</div>
+
+<!-- 🎉 Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+function startQuestionPage() {
+  // start music
+  const music = document.getElementById("bgMusic");
+  music.volume = 0.2;
+  music.play().catch(()=>{});
+
+  // show question page
+  document.getElementById("content").innerHTML = `
+    <h2>This question is locked 🔒</h2>
+    <p><b>What’s my favorite thing about you?</b></p>
+    <input type="text" placeholder="Type your answer...">
+    <br>
+    <button onclick="unlock()">Unlock</button>
+  `;
+}
+
+// 🔓 Unlock sequence
+function unlock() {
+  document.getElementById("content").innerHTML = `
+    <h2>The correct answer:</h2>
+    <h1>Everything about you 💖</h1>
+    <div id="list"></div>
+  `;
+
+  const things = [
+    "Your smile",
+    "The way you laugh",
+    "How easy you are to talk to",
+    "How much fun I have with you",
+    "The way you get excited about things",
+    "Your sense of humor",
+    "Your kindness",
+    "Your pretty face",
+    "Your voice",
+    "Your energy",
+    "Your kisses (big fan of this one)",
+    "Your compliments",
+    "How cute you are",
+    "How comfortable I feel with you",
+    "Your sweet moments",
+    "Your silly moments",
+    "Everything that makes you YOU"
+  ];
+
+  let i = 0;
+  const listDiv = document.getElementById("list");
+
+  const interval = setInterval(() => {
+    if (i < things.length) {
+      const p = document.createElement("p");
+      p.textContent = "💖 " + things[i];
+      p.classList.add("list-item");
+      listDiv.appendChild(p);
+      setTimeout(() => p.classList.add("show"), 50);
+      i++;
+    } else {
+      clearInterval(interval);
+      showQuestion();
+    }
+  }, 900);
+}
+
+function showQuestion() {
+  const div = document.getElementById("list");
+  const btn = document.createElement("button");
+  btn.textContent = "Continue";
+  btn.onclick = ask;
+  div.appendChild(btn);
+}
+
+function ask() {
+  document.getElementById("content").innerHTML = `
+    <h1>So… will you be my Valentine? 💌</h1>
+    <button onclick="yes()">Yes 💖</button>
+  `;
+}
+
+// 💥 Final screen
+function yes() {
+  document.getElementById("content").innerHTML = `
+    <h1>Good because you're not allowed to say no 🥰🌹</h1>
+    <div id="stuckMessage" style="margin-top: 50px; font-size: 24px; opacity: 0; transition: opacity 1s;"></div>
+  `;
+
+  // Confetti
+  const duration = 3000;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+
+  // After 5 seconds, show silly message
+  setTimeout(() => {
+    const msg = document.getElementById("stuckMessage");
+    msg.textContent = "You're stuck with me 😎💖";
+    msg.style.opacity = 1;
+  }, 5000);
+}
+
+</script>
+
+</body>
+</html>
